@@ -1,0 +1,18 @@
+# kubectl create secret generic github-access --from-literal token=x -n argo-events --dry-run=client --output yaml | kubeseal --format=yaml
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: github-access
+  namespace: argo-events
+spec:
+  encryptedData:
+    token: AgChnRpRCrJcRvuxdPS6MFdt7rLcJXxQrjjJuUlbv0wMnqR9/vL3I3dQcIvYTJgyaU3UkB8rx+qB9bw0qvBr4uQmgCYT4NnYYCWtoN+4ekrw5IKzKRqFoyNawlLfCQ2s37Jztda6S6xvhJi9k3acuyKs9d7ecCLQ4/B0YJ4cyFlkIFLTeRn1KBZ0eDq0EbRcmWw2kz1+XE1ICzOjpUUhhMgswMw1wH2OQj+lgDqBYm5zaUMy/f1pYE54Nah0xEJ7HeZnIASQIO22XQSMAPTcj6W+327bAXEkcbMtSwLO5oD9wMAsvUugjTlLyWOd24/sfna/NNraAM74ydvAvgX5+Rx/R0+KG2xZAGwck/JJE7ONtOgp6nQxYnEZwo1J04ZR//7YchnNurM5nehJ/sY23IA8uY6pHovSiyvP3BygYLGjTlJwBYwow2oXoPjXpa9WXkZ9hG4QrWuQc6BgS5Iw1TCAEQy9pCSQ9qiLoQXCKSz1DFCFtoq1C0Jk8K1qlC4bXqdVZZfgr/dN4Czo3/aIZsoLkvXTN/RjM7ZiQOGp2uWU0KvjllkmoxQEwZwg1ueOg5o6/qIW0z4KqOLufFiwHbJk2dgRogDcVvMLTi9nmg6M6y+fgj/IZyuqA9X/cOY+2YN0h+dfgNGRewtVMQuz08xzdgpfUHANn+yXf4FSwkWXNztrZ+OMJTUlO7apF8y7DEL4tGvBg7JL802HXf3echGrpflJEyN18TzbdSLOsujHZDAJrpTA+B0PYj2/A2syb6zkh/5V67upQEI1ga4jlj77
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: github-access
+      namespace: argo-events
+    type: Opaque
+

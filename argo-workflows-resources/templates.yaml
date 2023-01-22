@@ -46,7 +46,7 @@ spec:
       - name: image_name
       - name: tag
     script:
-      image: vfarcic/kustomize:3.9.2
+      image: bitnami/git
       command: [sh]
       source: |
         set -e
