@@ -1,4 +1,10 @@
-# From https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/sensor-rbac.yaml (modified)
+# From https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/sensor-rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: operate-workflow-sa
+---
+# Similarly you can use a ClusterRole and ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -24,4 +30,4 @@ roleRef:
   name: operate-workflow-role
 subjects:
   - kind: ServiceAccount
-    name: argo-events-sa
+    name: operate-workflow-sa
