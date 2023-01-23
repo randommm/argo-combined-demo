@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: webhook
+  name: github
 spec:
   template:
     serviceAccountName: operate-workflow-sa
@@ -27,7 +27,7 @@ spec:
               generateName: argo-combined-app-
               namespace: workflows
             spec:
-              entrypoint: build
+              entrypoint: check-branch
               serviceAccountName: workflow
               volumes:
               - name: regcred
@@ -46,9 +46,9 @@ spec:
                       path: user
                     - key: email
                       path: email
-              - name: slack-access
-                secret:
-                  secretName: slack-access
+              #- name: slack-access
+                #secret:
+                  #secretName: slack-access
               templates:
               - name: build
                 dag:
@@ -67,7 +67,7 @@ spec:
                       - name: repo_commit_id
                         value: ""
                       - name: container_image
-                        value: marcoinacio
+                        value: marcoinacio/
                       - name: container_tag
                         value: ""
                   - name: promote-staging
@@ -80,7 +80,7 @@ spec:
                       - name: environment
                         value: staging
                       - name: repo_owner
-                        value: marcoinacio
+                        value: randommm
                       - name: repo_name
                         value: argo-combined-demo
                       - name: image_owner
@@ -101,7 +101,7 @@ spec:
                       - name: environment
                         value: production
                       - name: repo_owner
-                        value: marcoinacio
+                        value: randommm
                       - name: repo_name
                         value: argo-combined-demo
                       - name: image_owner
@@ -121,43 +121,43 @@ spec:
                     template: test
                     dependencies:
                     - promote-staging
-                  - name: build-notification
-                    templateRef:
-                      name: custom-json
-                      template: custom-json
-                      clusterScope: true
-                    arguments:
-                      parameters:
-                      - name: stage
-                        value: build
-                      - name: author
-                        value: ""
-                    dependencies:
-                    - build
-                  - name: push-notification
-                    templateRef:
-                      name: custom-json
-                      template: custom-json
-                      clusterScope: true
-                    arguments:
-                      parameters:
-                      - name: stage
-                        value: push
-                      - name: author
-                        value: ""
-                  - name: deployment-notification
-                    templateRef:
-                      name: custom-json
-                      template: custom-json
-                      clusterScope: true
-                    arguments:
-                      parameters:
-                      - name: stage
-                        value: deployment
-                      - name: author
-                        value: ""
-                    dependencies:
-                    - promote-production
+                  #- name: build-notification
+                    #templateRef:
+                      #name: custom-json
+                      #template: custom-json
+                      #clusterScope: true
+                    #arguments:
+                      #parameters:
+                      #- name: stage
+                        #value: build
+                      #- name: author
+                        #value: ""
+                    #dependencies:
+                    #- build
+                  #- name: push-notification
+                    #templateRef:
+                      #name: custom-json
+                      #template: custom-json
+                      #clusterScope: true
+                    #arguments:
+                      #parameters:
+                      #- name: stage
+                        #value: push
+                      #- name: author
+                        #value: ""
+                  #- name: deployment-notification
+                    #templateRef:
+                      #name: custom-json
+                      #template: custom-json
+                      #clusterScope: true
+                    #arguments:
+                      #parameters:
+                      #- name: stage
+                        #value: deployment
+                      #- name: author
+                        #value: ""
+                    #dependencies:
+                    #- promote-production
               - name: test
                 script:
                   image: alpine
@@ -168,6 +168,27 @@ spec:
                   volumeMounts:
                   - name: github-access
                     mountPath: /.github/
+              - name: check-branch
+                steps:
+                - - name: run-py-check-branch
+                    template: py-check-branch
+                    arguments:
+                      parameters:
+                      - name: ref
+                        value: placeholder
+                - - name: run-build-dag-if-true
+                    template: build
+                    when: "{{steps.run-py-check-branch.outputs.result}}"
+              - name: py-check-branch
+                inputs:
+                  parameters:
+                  - name: ref
+                script:
+                  image: python:alpine3.9
+                  command: [python]
+                  source: |
+                    print(str("{{inputs.parameters.ref}}" == "refs/heads/master").lower())
+
         parameters:
         - src:
             dependencyName: github
@@ -208,13 +229,17 @@ spec:
           dest: spec.templates.0.dag.tasks.2.arguments.parameters.5.value
         - src:
             dependencyName: github
-            dataKey: body.repository.owner.name
-          dest: spec.templates.0.dag.tasks.4.arguments.parameters.1.value
-        - src:
-            dependencyName: github
-            dataKey: body.repository.owner.name
-          dest: spec.templates.0.dag.tasks.5.arguments.parameters.1.value
-        - src:
-            dependencyName: github
-            dataKey: body.repository.owner.name
-          dest: spec.templates.0.dag.tasks.6.arguments.parameters.1.value
+            dataKey: body.ref
+          dest: spec.templates.2.steps.0.0.arguments.parameters.0.value
+        #- src:
+            #dependencyName: github
+            #dataKey: body.repository.owner.name
+          #dest: spec.templates.0.dag.tasks.5.arguments.parameters.1.value
+        #- src:
+            #dependencyName: github
+            #dataKey: body.repository.owner.name
+          #dest: spec.templates.0.dag.tasks.6.arguments.parameters.1.value
+        #- src:
+            #dependencyName: github
+            #dataKey: body.repository.owner.name
+          #dest: spec.templates.0.dag.tasks.7.arguments.parameters.1.value
