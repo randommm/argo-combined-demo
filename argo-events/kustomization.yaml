@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - argo-events-install.yaml
 - event-bus.yaml
-#- sensor-rbac.yaml
+- sensor-rbac.yaml
 - validating-webhook.yaml
-#- workflow-rbac.yaml
+- workflow-rbac.yaml
 namespace: argo-events
