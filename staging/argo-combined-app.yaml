@@ -10,7 +10,7 @@ spec:
   source:
     path: kustomize/overlays/staging
     repoURL: https://github.com/randommm/argo-combined-app
-    targetRevision: HEAD
+    targetRevision: staging
   destination:
     server: https://kubernetes.default.svc
     namespace: staging

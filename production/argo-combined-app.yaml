@@ -10,7 +10,7 @@ spec:
   source:
     path: kustomize/overlays/production
     repoURL: https://github.com/randommm/argo-combined-app
-    targetRevision: HEAD
+    targetRevision: production
   destination:
     server: https://kubernetes.default.svc
     namespace: production
